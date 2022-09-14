@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Jordan Sonier\'s Android LabsAssingments</string>
+    <string name="hello_message" translatable="false">Hello world!</string>
+    <string name="button_message" translatable="false">I\'m a button</string>
 </resources>
