@@ -60,5 +60,6 @@ public class MainActivity extends AppCompatActivity {
             model.isSelected.postValue(isChecked);
         });
         variableBinding.myImageButton.setOnClickListener(click -> Toast.makeText(this, "The width = " + click.getWidth() + " and height = " + click.getHeight(), Toast.LENGTH_SHORT).show());
+
     }
 }
