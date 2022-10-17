@@ -1,5 +1,9 @@
 <resources>
-    <string name="app_name">Jordan Sonier\'s Android LabsAssingments</string>
-    <string name="hello_message" translatable="false">Hello world!</string>
-    <string name="button_message" translatable="false">I\'m a button</string>
+    <string name="app_name" translatable="false">Jordan\'s Android Lab</string>
+    <string name="emailTitlePrompt" translatable="false">Enter Your email here:</string>
+    <string name="emailTextBoxPrompt" translatable="false">Type email here</string>
+    <string name="passwordPrompt" translatable="false">Type your password:</string>
+    <string name="loginBtn" translatable="false">Login</string>
+    <string name="callBtn" translatable="false">Call Number</string>
+    <string name="pictureChangeBtn" translatable="false">Change Picture</string>
 </resources>
