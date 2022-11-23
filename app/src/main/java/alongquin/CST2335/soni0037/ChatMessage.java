@@ -1,29 +1,41 @@
 package alongquin.CST2335.soni0037;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 /**
+ * This class represents a single chat message
  * @author Jordan Sonier
  * @version 1.0
  */
+@Entity
 public class ChatMessage {
+
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    @ColumnInfo(name = "Message")
     private String message;
+    @ColumnInfo(name = "TimeSent")
     private String timeSent;
+    @ColumnInfo(name = "SendOrRecieve")
     private boolean isSentButton;
 
     /**
-     * Constructor for message, timeSent, and button pressed
-     * @param m message from user
-     * @param t time message was sent
-     * @param sent if button was clicked to send
+     * Default Constructors
+     * @param message user message
+     * @param timeSent time message sent
+     * @param isSentButton button sent or not
      */
-    ChatMessage(String m, String t, boolean sent)
+    ChatMessage(String message, String timeSent, boolean isSentButton)
     {
-        message = m;
-        timeSent = t;
-        isSentButton = sent;
+        this.message = message;
+        this.timeSent = timeSent;
+        this.isSentButton = isSentButton;
     }
 
     /**
-     * Obtains message from user
+     * returns message
      * @return message
      */
     public String getMessage() {
@@ -31,40 +43,40 @@ public class ChatMessage {
     }
 
     /**
-     * sets message from user
-     * @param message sets message
+     * sets message
+     * @param message text
      */
     public void setMessage(String message) {
         this.message = message;
     }
 
     /**
-     * Obtains time message was sent
-     * @return time message was sent
+     * returns time sent
+     * @return timeSent
      */
     public String getTimeSent() {
         return timeSent;
     }
 
     /**
-     * sets time message was sent
-     * @param timeSent sets time message was sent
+     * sets time set
+     * @param timeSent time message was sent
      */
     public void setTimeSent(String timeSent) {
         this.timeSent = timeSent;
     }
 
     /**
-     * If button is clicked
-     * @return button clicked
+     * button sent
+     * @return isSentButton
      */
-    public boolean isSentButton() {
+    public boolean getSentButton() {
         return isSentButton;
     }
 
     /**
-     * sets if button is clicked
-     * @param sentButton boolean for if button is clicked
+     * set button sent
+     * @param sentButton
      */
     public void setSentButton(boolean sentButton) {
         isSentButton = sentButton;
