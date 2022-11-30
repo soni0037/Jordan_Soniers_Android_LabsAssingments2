@@ -9,4 +9,5 @@ import alongquin.CST2335.soni0037.ChatMessage;
 
 public class ChatRoomViewModel extends ViewModel {
     public MutableLiveData<ArrayList<ChatMessage>> messages = new MutableLiveData< >();
+    public MutableLiveData<ChatMessage> selectedMessage = new MutableLiveData< >();
 }

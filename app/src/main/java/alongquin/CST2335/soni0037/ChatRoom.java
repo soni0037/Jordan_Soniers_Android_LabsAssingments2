@@ -26,6 +26,11 @@ import alongquin.CST2335.soni0037.data.ChatRoomViewModel;
 import alongquin.CST2335.soni0037.databinding.ActivityChatRoomBinding;
 import alongquin.CST2335.soni0037.databinding.SentMessageBinding;
 import alongquin.CST2335.soni0037.databinding.ReceiveMessageBinding;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import alongquin.CST2335.soni0037.ui.MessageDetailsFragment;
+
+
 
 public class ChatRoom extends AppCompatActivity {
 
@@ -38,6 +43,7 @@ public class ChatRoom extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //Creating ViewBinding
         binding = ActivityChatRoomBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -46,22 +52,31 @@ public class ChatRoom extends AppCompatActivity {
         MessageDatabase db = Room.databaseBuilder(getApplicationContext(), MessageDatabase.class, "MessageDatabase").fallbackToDestructiveMigration().build();
         mDAO = db.cmDAO();
 
+        //Data kept in a viewModel so that the data survives screen rotation
+        chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
         //Running the database query in the separated thread
-        if(messages == null)
-        {
-            chatModel.messages.setValue(messages = new ArrayList<>());
+        if(messages == null)  {
+            messages = chatModel.messages.getValue();
+        }
             //Creating a separate thread
             Executor thread = Executors.newSingleThreadExecutor();
             thread.execute(() ->
-            {
-                messages.addAll( mDAO.getAllMessages() ); //Once you get the data from database
+                    {
+                        messages.addAll(mDAO.getAllMessages()); //Once you get the data from database
+                    });
+                runOnUiThread(() -> {
                 binding.recyclerView.setAdapter( adt ); //You can then load the RecyclerView
             });
-        }
-
-        //Data kept in a viewModel so that the data survives screen rotation
-        chatModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
-        messages = chatModel.messages.getValue();
+//        observe function
+        chatModel.selectedMessage.observe(this, (newMessageValue) -> {
+//      create a ChatRoom fragment
+            MessageDetailsFragment chatFragment = new MessageDetailsFragment( newMessageValue );
+//            add the code to load a Fragment
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentLocation, chatFragment)
+                    .commit();
+        });
         //verify if the chatModel.messages variable has never been set before
         //The first time you come to the ChatRoom class you will have to initialize the ChatModel class
         if(messages == null)
@@ -114,10 +129,15 @@ public class ChatRoom extends AppCompatActivity {
             public void onBindViewHolder(@NonNull MyRowHolder holder, int position) {
                 holder.message.setText(messages.get(position).getMessage());
                 holder.time.setText(messages.get(position).getTimeSent());
+//
+//                ChatMessage obj = messages.get(position);
+//                holder.message.setText(obj.getMessage());
+//                holder.time.setText(obj.getTimeSent());
             }
 
             @Override
             public int getItemCount() {
+
                 return messages.size();
             }
 
@@ -136,29 +156,34 @@ public class ChatRoom extends AppCompatActivity {
     class MyRowHolder extends RecyclerView.ViewHolder {
         TextView message;
         TextView time;
+
         public MyRowHolder(@NonNull View itemView) {
             super(itemView);
 
-            itemView.setOnClickListener(clk ->{
-                int position = getAbsoluteAdapterPosition(); //telling which row (position) this row is currently in the adapter object
-                //Making an Alert Box
-                AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
-                builder.setMessage("Do you want to delete the message: " + message.getText())
-                        .setTitle("Question:")
-                        .setNegativeButton("No", ((dialog, which) -> {}))
-                        .setPositiveButton("Yes", ((dialog, which) -> {
-                            ChatMessage removeMessage = messages.get(position);
-                            Executors.newSingleThreadExecutor().execute(() -> mDAO.deleteMessage(removeMessage));
-                            messages.remove(position);
-                            adt.notifyItemRemoved(position);
-                            Snackbar.make(message, "You've Deleted the text" + position, Snackbar.LENGTH_LONG).setAction("Undo", click -> {
-                                messages.add(position,removeMessage);
-                                adt.notifyItemInserted(position);
-                            }).show();
-                        })).create().show();
-            });
             message = itemView.findViewById(R.id.message);
             time = itemView.findViewById(R.id.time);
+
+            itemView.setOnClickListener(clk ->{
+                int position = getAbsoluteAdapterPosition();
+                ChatMessage selected = messages.get(position);
+                chatModel.selectedMessage.postValue(selected);
+//                int position = getAbsoluteAdapterPosition(); //telling which row (position) this row is currently in the adapter object
+//                //Making an Alert Box
+//                AlertDialog.Builder builder = new AlertDialog.Builder(ChatRoom.this);
+//                builder.setMessage("Do you want to delete the message: " + message.getText())
+//                        .setTitle("Question:")
+//                        .setNegativeButton("No", ((dialog, which) -> {}))
+//                        .setPositiveButton("Yes", ((dialog, which) -> {
+//                            ChatMessage removeMessage = messages.get(position);
+//                            Executors.newSingleThreadExecutor().execute(() -> mDAO.deleteMessage(removeMessage));
+//                            messages.remove(position);
+//                            adt.notifyItemRemoved(position);
+//                            Snackbar.make(message, "You've Deleted the text" + position, Snackbar.LENGTH_LONG).setAction("Undo", click -> {
+//                                messages.add(position,removeMessage);
+//                                adt.notifyItemInserted(position);
+//                            }).show();
+//                        })).create().show();
+            });
         }
     }
 }

@@ -20,18 +20,14 @@ public class ChatMessage {
     private String timeSent;
     @ColumnInfo(name = "SendOrRecieve")
     private boolean isSentButton;
-
-    /**
-     * Default Constructors
-     * @param message user message
-     * @param timeSent time message sent
-     * @param isSentButton button sent or not
-     */
-    ChatMessage(String message, String timeSent, boolean isSentButton)
+//no arg constructor
+    public ChatMessage(){}
+    //constructor three param
+    ChatMessage(String m, String t, boolean sent)
     {
-        this.message = message;
-        this.timeSent = timeSent;
-        this.isSentButton = isSentButton;
+        message = m;
+        timeSent = t;
+        isSentButton = sent;
     }
 
     /**
